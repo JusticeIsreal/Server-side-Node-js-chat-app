@@ -1,23 +1,27 @@
+const { default: axios } = require("axios");
+
 const authenticateUser = async (req, res) => {
   const { username } = req.body;
+
   try {
-    const resp = axios.put(
+    const resp = await axios.put(
       "https://api.chatengine.io/users/",
       {
         username: username,
         secret: username,
-        first_name: username,
       },
       {
-        hearders: { private_key: process.env.CHAT_ENGINE_PRIVATE_KEY },
+        headers: { "PRIVATE-KEY": "07f14470-d6e7-43bc-8361-454ccc0acc0f" },
       }
     );
-    return res.status(resp.status).json(resp.data);
-  } catch (error) {
-    return res.status(error.resp.status).json(error.resp.data);
-  }
 
-  return res.json({ username: username, secret: "1234s" });
+    const responseData = resp.data;
+    console.log(responseData) // Extract the relevant data
+    return res.status(200).json(responseData);
+  } catch (error) {
+  
+    return res.status(500).json({ error: "An error occurred." });
+  }
 };
 
 module.exports = { authenticateUser };
